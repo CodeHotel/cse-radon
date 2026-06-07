@@ -14,32 +14,32 @@ unnecessary fan operation outside those windows.
 
 Let the scheduled worker entry windows be
 
-$$
+```math
 \mathcal{W}
 = \bigcup_{i=1}^{N}
 \left[t_i^{\mathrm{in}},\, t_i^{\mathrm{out}}\right].
-$$
+```
 
 For each interval
 
-$$
+```math
 \left[t_i^{\mathrm{in}},\, t_i^{\mathrm{out}}\right],
-$$
+```
 
 the controller must make the radon concentration satisfy
 
-$$
+```math
 R(t) \le R_{\mathrm{safe}},
 \qquad
 \forall t \in
 \left[t_i^{\mathrm{in}},\, t_i^{\mathrm{out}}\right].
-$$
+```
 
 Outside these windows,
 
-$$
+```math
 t \notin \mathcal{W},
-$$
+```
 
 high radon concentration may be operationally acceptable, provided that it does not prevent
 the system from preparing the room safely before the next scheduled entry.
@@ -47,43 +47,43 @@ the system from preparing the room safely before the next scheduled entry.
 The key difficulty is that the fan does not reduce radon instantaneously. If the fan is turned
 on at time
 
-$$
+```math
 t = t_i^{\mathrm{in}},
-$$
+```
 
 the room may still be unsafe when workers enter. The fan must therefore be activated at an
 earlier time
 
-$$
+```math
 t_i^{\mathrm{on}} < t_i^{\mathrm{in}},
-$$
+```
 
 such that the predicted concentration satisfies
 
-$$
+```math
 \widehat{R}(t_i^{\mathrm{in}})
 \le
 R_{\mathrm{safe}} - m_{\mathrm{safety}},
-$$
+```
 
 where
 
-$$
+```math
 m_{\mathrm{safety}} > 0
-$$
+```
 
 is a conservative safety margin.
 
 The project is therefore not only a prediction problem. It is a two-layer engineering
 problem:
 
-$$
+```math
 \boxed{
 \text{Prediction}
 \quad + \quad
 \text{Planning}
 }
-$$
+```
 
 The prediction layer learns how this specific room accumulates and clears radon. The
 planning layer uses that prediction model to choose a binary fan toggle schedule that makes
@@ -92,28 +92,28 @@ excessive switching.
 
 The fan command is binary:
 
-$$
+```math
 u(t) \in \{0,1\},
-$$
+```
 
 where
 
-$$
+```math
 u(t)=0
 \quad \text{means fan off,}
-$$
+```
 
 and
 
-$$
+```math
 u(t)=1
 \quad \text{means fan on.}
-$$
+```
 
 The desired system is not merely a detector and not merely a timer. It is a predictive
 planner:
 
-$$
+```math
 \left[
 \text{current radon state}
 \right]
@@ -129,20 +129,20 @@ $$
 \left[
 \text{optimized fan schedule}
 \right].
-$$
+```
 
 ## 2. Available Data as a Time-Dependent Vector
 
 At each time
 
-$$
+```math
 t,
-$$
+```
 
 we assume that the system observes the underground room, the ventilator, and the outside
 atmosphere. A practical measurement vector is
 
-$$
+```math
 \mathbf{z}(t)
 =
 \begin{bmatrix}
@@ -156,83 +156,83 @@ T_{\mathrm{out}}(t) \\
 H_{\mathrm{out}}(t) \\
 P_{\mathrm{out}}(t)
 \end{bmatrix}.
-$$
+```
 
 The entries are:
 
-$$
+```math
 R_{\mathrm{room}}(t)
 :
 \text{measured radon concentration in the pump room},
-$$
+```
 
-$$
+```math
 T_{\mathrm{room}}(t)
 :
 \text{room temperature},
-$$
+```
 
-$$
+```math
 H_{\mathrm{room}}(t)
 :
 \text{room relative humidity},
-$$
+```
 
-$$
+```math
 P_{\mathrm{room}}(t)
 :
 \text{room pressure},
-$$
+```
 
-$$
+```math
 Q_{\mathrm{fan}}(t)
 :
 \text{fan volumetric flow rate},
-$$
+```
 
-$$
+```math
 \Delta P_{\mathrm{fan}}(t)
 :
 \text{fan pressure differential},
-$$
+```
 
-$$
+```math
 T_{\mathrm{out}}(t)
 :
 \text{outside temperature from weather API},
-$$
+```
 
-$$
+```math
 H_{\mathrm{out}}(t)
 :
 \text{outside humidity from weather API},
-$$
+```
 
 and
 
-$$
+```math
 P_{\mathrm{out}}(t)
 :
 \text{outside atmospheric pressure from weather API}.
-$$
+```
 
 The control input is
 
-$$
+```math
 u(t) \in \{0,1\}.
-$$
+```
 
 The effective fan-driven ventilation can be written as
 
-$$
+```math
 Q_{\mathrm{eff}}(t)
 = u(t)\,Q_{\mathrm{fan}}(t).
-$$
+```
 
 If the measured fan flow is not available directly, it may be approximated by a learned
 relationship
 
-$$
+```math
 Q_{\mathrm{eff}}(t)
 =
 u(t)\,
@@ -244,83 +244,83 @@ T_{\mathrm{room}}(t)-T_{\mathrm{out}}(t),
 H_{\mathrm{room}}(t),
 H_{\mathrm{out}}(t)
 \right).
-$$
+```
 
 The dataset is a time-continuum, or a sampled approximation of a time-continuum:
 
-$$
+```math
 \mathcal{D}
 =
 \left\{
 \mathbf{z}(t), u(t)
 \right\}_{t \in [0,T]}.
-$$
+```
 
 In sampled form,
 
-$$
+```math
 \mathcal{D}_K
 =
 \left\{
 \mathbf{z}_k,u_k,t_k
 \right\}_{k=0}^{K},
-$$
+```
 
 where
 
-$$
+```math
 \mathbf{z}_k = \mathbf{z}(t_k),
 \qquad
 u_k = u(t_k).
-$$
+```
 
 If the radon sensor reports a moving average rather than instantaneous concentration, the
 observed signal may be
 
-$$
+```math
 Y_{\tau}(t)
 =
 \frac{1}{\tau}
 \int_{t-\tau}^{t}
 R(s)\,ds,
-$$
+```
 
 where
 
-$$
+```math
 \tau = 4\ \mathrm{hours}
-$$
+```
 
 or
 
-$$
+```math
 \tau = 24\ \mathrm{hours}.
-$$
+```
 
 This distinction is important. The controller needs to reason about the hidden instantaneous
 or short-window concentration
 
-$$
+```math
 R(t),
-$$
+```
 
 even if the sensor reports
 
-$$
+```math
 Y_{\tau}(t).
-$$
+```
 
 ## 3. Engineering Problem Definition: Prediction + Planning
 
 After defining the measured vector
 
-$$
+```math
 \mathbf{z}(t),
-$$
+```
 
 the engineering problem should be written as two coupled mathematical problems:
 
-$$
+```math
 \boxed{
 \mathcal{P}_1:
 \text{predict radon dynamics}
@@ -330,50 +330,50 @@ $$
 \mathcal{P}_2:
 \text{plan the fan toggle sequence}
 }
-$$
+```
 
 The first problem learns a predictive model. The second problem exploits that predictive
 model to choose
 
-$$
+```math
 u(t)\in\{0,1\}.
-$$
+```
 
 The worker-entry plan is also binary:
 
-$$
+```math
 w(t)\in\{0,1\},
-$$
+```
 
 where
 
-$$
+```math
 w(t)=1
 \quad
 \text{means workers are scheduled to be inside the room,}
-$$
+```
 
 and
 
-$$
+```math
 w(t)=0
 \quad
 \text{means no scheduled worker entry.}
-$$
+```
 
 In sampled form:
 
-$$
+```math
 w_k = w(t_k),
 \qquad
 u_k = u(t_k),
 \qquad
 R_k = R(t_k).
-$$
+```
 
 The complete operational map is therefore:
 
-$$
+```math
 \boxed{
 \left(
 \mathcal{D}_{0:k},
@@ -383,29 +383,29 @@ w_{k:k+H}
 \longrightarrow
 u_{k:k+H}^{\star}
 }
-$$
+```
 
 where
 
-$$
+```math
 \mathcal{D}_{0:k}
 =
 \left\{
 \mathbf{z}_j,u_j,y_j
 \right\}_{j=0}^{k}
-$$
+```
 
 is the historical data,
 
-$$
+```math
 \mathbf{z}_{k:k+H}^{+}
-$$
+```
 
 is the future or forecasted exogenous input over the planning horizon, and
 
-$$
+```math
 u_{k:k+H}^{\star}
-$$
+```
 
 is the optimized fan plan.
 
@@ -413,14 +413,14 @@ is the optimized fan plan.
 
 The prediction problem is to learn a model
 
-$$
+```math
 \mathcal{M}_{\theta}
-$$
+```
 
 that maps current state, future exogenous variables, and a proposed fan sequence into a
 future radon trajectory:
 
-$$
+```math
 \boxed{
 \widehat{R}_{k:k+H}
 =
@@ -431,45 +431,45 @@ $$
 u_{k:k+H}
 \right)
 }
-$$
+```
 
 where
 
-$$
+```math
 \widehat{\mathbf{x}}_k
 =
 \begin{bmatrix}
 \widehat{R}_k\\
 \widehat{\mathbf{h}}_k
 \end{bmatrix}
-$$
+```
 
 is the estimated current state, including both radon concentration and latent room state.
 
 The state estimate is obtained from past data:
 
-$$
+```math
 \widehat{\mathbf{x}}_k
 =
 \mathcal{E}_{\theta}
 \left(
 \mathcal{D}_{0:k}
 \right).
-$$
+```
 
 The model may output a deterministic forecast:
 
-$$
+```math
 \widehat{R}_{k+\ell}
 \approx
 R_{k+\ell},
 \qquad
 \ell=1,\ldots,H,
-$$
+```
 
 or, preferably for safety, a probabilistic forecast:
 
-$$
+```math
 p_{\theta}
 \left(
 R_{k+\ell}
@@ -478,22 +478,22 @@ R_{k+\ell}
 \mathbf{z}_{k:k+\ell}^{+},
 u_{k:k+\ell}
 \right).
-$$
+```
 
 Thus the prediction task is:
 
-$$
+```math
 \boxed{
 \theta^{\star}
 =
 \arg\min_{\theta}
 \mathcal{L}_{\mathrm{pred}}(\theta)
 }
-$$
+```
 
 with a typical objective:
 
-$$
+```math
 \mathcal{L}_{\mathrm{pred}}(\theta)
 =
 \sum_{k}
@@ -507,7 +507,7 @@ y_{k+\ell}
 \mathcal{L}_{\mathrm{phys}}(\theta)
 +
 \mathcal{L}_{\mathrm{reg}}(\theta).
-$$
+```
 
 The prediction model is not the final product by itself. It is the simulator used by the fan
 planner.
@@ -516,7 +516,7 @@ planner.
 
 The planning problem is to choose a binary fan sequence:
 
-$$
+```math
 \boxed{
 u_{k:k+H}^{\star}
 =
@@ -529,11 +529,11 @@ u_{k+H}^{\star}
 \qquad
 u_j^{\star}\in\{0,1\}.
 }
-$$
+```
 
 The planner uses the learned prediction model:
 
-$$
+```math
 \widehat{\mathbf{x}}_{j+1}
 =
 F_{\theta}
@@ -544,11 +544,11 @@ u_j
 \right),
 \qquad
 j=k,\ldots,k+H-1.
-$$
+```
 
 It minimizes fan use, switching, and safety violations:
 
-$$
+```math
 \boxed{
 \min_{u_{k:k+H}}
 \sum_{j=k}^{k+H}
@@ -564,19 +564,19 @@ c_{\xi}
 \sum_{j=k}^{k+H}
 \xi_j
 }
-$$
+```
 
 subject to:
 
-$$
+```math
 u_j\in\{0,1\},
 \qquad
 \xi_j\ge 0,
-$$
+```
 
 and the worker-entry safety constraint:
 
-$$
+```math
 \boxed{
 w_j=1
 \quad\Longrightarrow\quad
@@ -588,11 +588,11 @@ m_{\mathrm{safety}}
 +
 \xi_j.
 }
-$$
+```
 
 Equivalently:
 
-$$
+```math
 w_j
 \left(
 R_j
@@ -603,11 +603,11 @@ m_{\mathrm{safety}}
 \right)
 \le
 \xi_j.
-$$
+```
 
 For probabilistic safety:
 
-$$
+```math
 \boxed{
 w_j=1
 \quad\Longrightarrow\quad
@@ -622,27 +622,27 @@ u_{k:j}
 \le
 R_{\mathrm{safe}}.
 }
-$$
+```
 
 The fan should also avoid excessive toggling. Define the switch indicator:
 
-$$
+```math
 s_j
 =
 \left|u_j-u_{j-1}\right|,
 \qquad
 s_j\in\{0,1\}.
-$$
+```
 
 A minimum debounce or dwell time of
 
-$$
+```math
 N_{\mathrm{debounce}}
-$$
+```
 
 steps can be enforced by:
 
-$$
+```math
 \boxed{
 \sum_{r=j}^{j+N_{\mathrm{debounce}}-1}
 s_r
@@ -651,7 +651,7 @@ s_r
 \qquad
 j=k,\ldots,k+H-N_{\mathrm{debounce}}+1.
 }
-$$
+```
 
 This means that once the fan toggles, no second toggle is allowed within the debounce
 window.
@@ -659,45 +659,45 @@ window.
 The planner is therefore not a second neural model. It is a constrained binary optimization
 problem wrapped around the prediction model:
 
-$$
+```math
 \boxed{
 \text{learn } \mathcal{M}_{\theta}
 \quad
 \text{then optimize } u_{k:k+H}.
 }
-$$
+```
 
 In control language, this is a mixed-integer model predictive control problem:
 
-$$
+```math
 \boxed{
 \text{UDE prediction model}
 \quad + \quad
 \text{binary MPC fan planner}.
 }
-$$
+```
 
 ## 4. Why Conventional CFD Is Not the Right Starting Point
 
 A full computational fluid dynamics model would try to solve the local concentration field
 
-$$
+```math
 c(\mathbf{x},t),
 \qquad
 \mathbf{x} \in \Omega,
-$$
+```
 
 where
 
-$$
+```math
 \Omega \subset \mathbb{R}^3
-$$
+```
 
 is the three-dimensional pump room domain.
 
 A classical advection-diffusion-reaction PDE for radon would be
 
-$$
+```math
 \frac{\partial c(\mathbf{x},t)}{\partial t}
 =
 -\nabla \cdot
@@ -713,55 +713,55 @@ D(\mathbf{x},t)\nabla c(\mathbf{x},t)
 s(\mathbf{x},t)
 -
 \lambda_{\mathrm{Rn}}c(\mathbf{x},t).
-$$
+```
 
 Here:
 
-$$
+```math
 c(\mathbf{x},t)
 :
 \text{radon concentration field},
-$$
+```
 
-$$
+```math
 \mathbf{v}(\mathbf{x},t)
 :
 \text{air velocity field},
-$$
+```
 
-$$
+```math
 D(\mathbf{x},t)
 :
 \text{effective turbulent diffusion or mixing coefficient},
-$$
+```
 
-$$
+```math
 s(\mathbf{x},t)
 :
 \text{radon source term},
-$$
+```
 
 and
 
-$$
+```math
 \lambda_{\mathrm{Rn}}
 :
 \text{radon decay constant}.
-$$
+```
 
 For radon-222,
 
-$$
+```math
 \lambda_{\mathrm{Rn}}
 =
 \frac{\ln 2}{T_{1/2}},
-$$
+```
 
 with
 
-$$
+```math
 T_{1/2} \approx 3.8\ \mathrm{days}.
-$$
+```
 
 The mathematical structure is simple. The practical identification is not. A CFD model would
 need accurate geometry, boundary conditions, inlet paths, leakage paths, pressure gradients,
@@ -770,7 +770,7 @@ stratification, and sensor placement effects.
 
 The hardest quantities are exactly the ones that matter most:
 
-$$
+```math
 \mathbf{v}(\mathbf{x},t),
 \qquad
 D(\mathbf{x},t),
@@ -780,7 +780,7 @@ s(\mathbf{x},t),
 \partial\Omega_{\mathrm{leak}},
 \qquad
 \partial\Omega_{\mathrm{inflow}}.
-$$
+```
 
 The room may have multiple uncontrolled air inflow paths. The fan may induce different
 effective flow patterns depending on door state, pressure difference, outside weather, humidity,
@@ -789,11 +789,11 @@ slow to calibrate, and brittle under real operating conditions.
 
 The better mathematical framing is:
 
-$$
+```math
 \text{keep the conservation law,}
 \qquad
 \text{learn the unknown effective terms.}
-$$
+```
 
 That leads to the chosen option.
 
@@ -804,42 +804,42 @@ scientific machine learning model.
 
 The idea is:
 
-$$
+```math
 \text{known physics}
 +
 \text{learned unknown terms}
 =
 \text{usable predictive model}.
-$$
+```
 
 Instead of attempting to reconstruct the full spatial PDE, we integrate the PDE over the room
 volume and obtain a reduced model for the room-average radon concentration.
 
 Define the room volume:
 
-$$
+```math
 V = |\Omega|.
-$$
+```
 
 Define the room-average radon concentration:
 
-$$
+```math
 R(t)
 =
 \frac{1}{V}
 \int_{\Omega}
 c(\mathbf{x},t)\,d\mathbf{x}.
-$$
+```
 
 Integrating the PDE over
 
-$$
+```math
 \Omega
-$$
+```
 
 gives
 
-$$
+```math
 \frac{d}{dt}
 \int_{\Omega}
 c(\mathbf{x},t)\,d\mathbf{x}
@@ -859,11 +859,11 @@ D\nabla c\cdot\mathbf{n}\,d\Gamma
 \lambda_{\mathrm{Rn}}
 \int_{\Omega}
 c\,d\mathbf{x}.
-$$
+```
 
 This can be reduced to an effective mass-balance model:
 
-$$
+```math
 \frac{dR}{dt}
 =
 S_{\mathrm{eff}}(t)
@@ -873,48 +873,48 @@ A_{\mathrm{eff}}(t)R(t)
 \lambda_{\mathrm{Rn}}R(t)
 +
 B_{\mathrm{in}}(t).
-$$
+```
 
 Where:
 
-$$
+```math
 S_{\mathrm{eff}}(t)
 =
 \frac{1}{V}
 \int_{\Omega}
 s(\mathbf{x},t)\,d\mathbf{x}
-$$
+```
 
 is the effective room-average radon generation term.
 
-$$
+```math
 A_{\mathrm{eff}}(t)
-$$
+```
 
 is the effective removal rate due to ventilation, leakage, mixing, and pressure-driven exchange.
 
-$$
+```math
 B_{\mathrm{in}}(t)
-$$
+```
 
 is any radon contribution from incoming air. In many settings this may be small compared with
 underground radon generation, but it should remain in the model until data proves it negligible.
 
 The problem is that
 
-$$
+```math
 S_{\mathrm{eff}}(t),
 \qquad
 A_{\mathrm{eff}}(t),
 \qquad
 B_{\mathrm{in}}(t)
-$$
+```
 
 are unknown, nonlinear, and site-specific. This is where ML is used.
 
 We write:
 
-$$
+```math
 \frac{dR}{dt}
 =
 S_{\theta}(\mathbf{z}(t),\mathbf{h}(t))
@@ -924,40 +924,40 @@ A_{\theta}(\mathbf{z}(t),u(t),\mathbf{h}(t))R(t)
 \lambda_{\mathrm{Rn}}R(t)
 +
 B_{\theta}(\mathbf{z}(t),u(t),\mathbf{h}(t)).
-$$
+```
 
 The neural network does not replace the physical equation. It only represents the unknown
 terms:
 
-$$
+```math
 S_{\theta}
 \approx
 S_{\mathrm{eff}},
-$$
+```
 
-$$
+```math
 A_{\theta}
 \approx
 A_{\mathrm{eff}},
-$$
+```
 
 and
 
-$$
+```math
 B_{\theta}
 \approx
 B_{\mathrm{in}}.
-$$
+```
 
 The vector
 
-$$
+```math
 \mathbf{h}(t)
-$$
+```
 
 is an optional latent state. It represents slow hidden conditions that are not directly measured:
 
-$$
+```math
 \mathbf{h}(t)
 =
 \begin{bmatrix}
@@ -966,11 +966,11 @@ h_2(t)\\
 \vdots\\
 h_m(t)
 \end{bmatrix}.
-$$
+```
 
 These latent variables may absorb effects such as:
 
-$$
+```math
 \text{water table behavior},
 \qquad
 \text{recent pump activity},
@@ -980,11 +980,11 @@ $$
 \text{humidity-dependent source strength},
 \qquad
 \text{unmeasured door or leakage state}.
-$$
+```
 
 The latent state can be modeled dynamically:
 
-$$
+```math
 \frac{d\mathbf{h}}{dt}
 =
 F_{\theta}
@@ -993,11 +993,11 @@ F_{\theta}
 \mathbf{z}(t),
 u(t)
 \right).
-$$
+```
 
 The complete grey-box model is therefore:
 
-$$
+```math
 \boxed{
 \begin{aligned}
 \frac{dR}{dt}
@@ -1015,44 +1015,44 @@ B_{\theta}(\mathbf{z},u,\mathbf{h}),
 F_{\theta}(\mathbf{h},\mathbf{z},u).
 \end{aligned}
 }
-$$
+```
 
 This is a Universal Differential Equation because part of the differential equation is known
 and part is learned:
 
-$$
+```math
 \frac{d\mathbf{x}}{dt}
 =
 f_{\mathrm{phys}}(\mathbf{x},\mathbf{z},u;\mathbf{p})
 +
 f_{\theta}(\mathbf{x},\mathbf{z},u).
-$$
+```
 
 For this project, the state may be
 
-$$
+```math
 \mathbf{x}(t)
 =
 \begin{bmatrix}
 R(t)\\
 \mathbf{h}(t)
 \end{bmatrix}.
-$$
+```
 
 The physical component is:
 
-$$
+```math
 f_{\mathrm{phys}}
 =
 \begin{bmatrix}
 -\lambda_{\mathrm{Rn}}R\\
 \mathbf{0}
 \end{bmatrix},
-$$
+```
 
 and the learned component is:
 
-$$
+```math
 f_{\theta}
 =
 \begin{bmatrix}
@@ -1064,24 +1064,24 @@ B_{\theta}(\mathbf{z},u,\mathbf{h})
 \\
 F_{\theta}(\mathbf{h},\mathbf{z},u)
 \end{bmatrix}.
-$$
+```
 
 Additional known physical structure can be included if available. For example:
 
-$$
+```math
 A_{\theta}(\mathbf{z},u,\mathbf{h})
 =
 A_{\mathrm{nat},\theta}(\mathbf{z},\mathbf{h})
 +
 u\,A_{\mathrm{fan},\theta}(\mathbf{z},\mathbf{h}).
-$$
+```
 
 This decomposition is valuable because it separates natural air exchange from fan-driven
 air exchange.
 
 The natural component may depend on pressure and temperature differences:
 
-$$
+```math
 A_{\mathrm{nat},\theta}
 =
 \Psi_{\mathrm{nat},\theta}
@@ -1092,11 +1092,11 @@ H_{\mathrm{room}},
 H_{\mathrm{out}},
 \mathbf{h}
 \right).
-$$
+```
 
 The fan component may depend on fan flow and pressure:
 
-$$
+```math
 A_{\mathrm{fan},\theta}
 =
 \Psi_{\mathrm{fan},\theta}
@@ -1106,29 +1106,29 @@ Q_{\mathrm{fan}},
 P_{\mathrm{room}}-P_{\mathrm{out}},
 \mathbf{h}
 \right).
-$$
+```
 
 A simple physical prior is:
 
-$$
+```math
 A_{\mathrm{fan},\theta}
 \approx
 \eta_{\theta}(\mathbf{z},\mathbf{h})
 \frac{Q_{\mathrm{fan}}}{V},
-$$
+```
 
 where
 
-$$
+```math
 0 \le \eta_{\theta}(\mathbf{z},\mathbf{h}) \le 1
-$$
+```
 
 is an effective ventilation efficiency. This term accounts for short-circuiting, dead zones,
 recirculation, and non-ideal mixing.
 
 Thus:
 
-$$
+```math
 \frac{dR}{dt}
 =
 S_{\theta}(\mathbf{z},\mathbf{h})
@@ -1144,7 +1144,7 @@ u(t)\,
 \right]R(t)
 +
 B_{\theta}(\mathbf{z},u,\mathbf{h}).
-$$
+```
 
 This equation is compact, interpretable, trainable, and directly useful for control.
 
@@ -1155,80 +1155,80 @@ spatial sensing, uncertain airflow paths, and a practical operational objective.
 
 The chosen model has the right bias:
 
-$$
+```math
 \text{conservation of mass}
 \quad
 \text{is trusted,}
-$$
+```
 
 while
 
-$$
+```math
 \text{source strength, leakage, mixing, and ventilation efficiency}
 \quad
 \text{are learned from data.}
-$$
+```
 
 This is important because the room probably does not provide enough information to identify
 the full spatial field
 
-$$
+```math
 c(\mathbf{x},t)
-$$
+```
 
 or the full airflow field
 
-$$
+```math
 \mathbf{v}(\mathbf{x},t).
-$$
+```
 
 But it can provide enough information to learn the operationally relevant map:
 
-$$
+```math
 \left(
 \mathbf{z}(t),u(t),R(t)
 \right)
 \longrightarrow
 \frac{dR}{dt}.
-$$
+```
 
 The system does not need perfect CFD. It needs a reliable estimate of:
 
-$$
+```math
 \widehat{R}(t+\tau)
 \quad
 \text{for}
 \quad
 \tau \in [0,H],
-$$
+```
 
 where
 
-$$
+```math
 H
-$$
+```
 
 is the control horizon, such as the time until the next scheduled entry.
 
 The chosen UDE model also supports uncertainty-aware control:
 
-$$
+```math
 \widehat{R}(t+\tau)
 \quad
 \longrightarrow
 \quad
 p\left(R(t+\tau)\mid\mathcal{D}_t\right).
-$$
+```
 
 Instead of asking only
 
-$$
+```math
 \widehat{R}(t_i^{\mathrm{in}}) \le R_{\mathrm{safe}},
-$$
+```
 
 the safety logic can ask:
 
-$$
+```math
 \Pr
 \left(
 R(t) \le R_{\mathrm{safe}}
@@ -1238,7 +1238,7 @@ R(t) \le R_{\mathrm{safe}}
 \right)
 \ge
 1-\alpha.
-$$
+```
 
 This is a much better operational target than a single deterministic forecast.
 
@@ -1248,15 +1248,15 @@ This is a much better operational target than a single deterministic forecast.
 
 A Physics-Informed Neural Network could represent:
 
-$$
+```math
 \widehat{c}_{\theta}(\mathbf{x},t)
 \approx
 c(\mathbf{x},t),
-$$
+```
 
 and penalize the PDE residual:
 
-$$
+```math
 \mathcal{R}_{\theta}(\mathbf{x},t)
 =
 \frac{\partial \widehat{c}_{\theta}}{\partial t}
@@ -1274,11 +1274,11 @@ D_{\theta}\nabla \widehat{c}_{\theta}
 s_{\theta}
 +
 \lambda_{\mathrm{Rn}}\widehat{c}_{\theta}.
-$$
+```
 
 The training loss would include:
 
-$$
+```math
 \mathcal{L}_{\mathrm{PDE}}
 =
 \frac{1}{N_r}
@@ -1286,21 +1286,21 @@ $$
 \left|
 \mathcal{R}_{\theta}(\mathbf{x}_j,t_j)
 \right|^2.
-$$
+```
 
 This is mathematically attractive, but it is not the best first choice here because the room
 probably does not have dense spatial radon measurements. With only one or a few sensors,
 many different spatial fields
 
-$$
+```math
 c(\mathbf{x},t)
-$$
+```
 
 can produce the same sensor readings. The inverse problem is underdetermined.
 
 PINNs also require boundary conditions, or at least useful approximations:
 
-$$
+```math
 c(\mathbf{x},t)
 \big|_{\partial\Omega},
 \qquad
@@ -1309,7 +1309,7 @@ c(\mathbf{x},t)
 \qquad
 D(\mathbf{x},t)
 \big|_{\partial\Omega}.
-$$
+```
 
 Those are precisely the quantities that are uncertain in the station room.
 
@@ -1320,7 +1320,7 @@ goal becomes spatial risk mapping. For the first deployable controller, they are
 
 Neural operators learn mappings between functions. For example, one could try to learn:
 
-$$
+```math
 \mathcal{G}_{\theta}:
 \left(
 u(t),
@@ -1331,45 +1331,45 @@ R(0)
 \right)
 \mapsto
 R(t).
-$$
+```
 
 More generally:
 
-$$
+```math
 \mathcal{G}_{\theta}:
 a(\cdot)
 \mapsto
 s(\cdot),
-$$
+```
 
 where
 
-$$
+```math
 a(\cdot)
-$$
+```
 
 is an input function and
 
-$$
+```math
 s(\cdot)
-$$
+```
 
 is a solution function.
 
 Fourier Neural Operators and DeepONets are powerful when there are many examples from a
 family of related PDE problems:
 
-$$
+```math
 \left\{
 a_j(\cdot),s_j(\cdot)
 \right\}_{j=1}^{M}.
-$$
+```
 
 They are especially attractive when one has:
 
-$$
+```math
 M \gg 1,
-$$
+```
 
 such as many CFD simulations, many rooms, many geometries, or many parameterized
 boundary conditions.
@@ -1383,13 +1383,13 @@ simulation campaign is later created.
 
 A black-box recurrent model, temporal convolution, or transformer could learn:
 
-$$
+```math
 \left[
 \mathbf{z}(t-k),u(t-k)
 \right]_{k=0}^{L}
 \mapsto
 R(t+\tau).
-$$
+```
 
 This may work empirically, but it has weaker extrapolation behavior. It does not know that
 radon mass must be conserved. It does not know that the fan should not increase the removal
@@ -1397,7 +1397,7 @@ time constant negatively. It does not know that source terms should be nonnegati
 
 A black-box model may fit the training data while violating basic physical expectations:
 
-$$
+```math
 A_{\theta} < 0,
 \qquad
 S_{\theta} < 0,
@@ -1405,7 +1405,7 @@ S_{\theta} < 0,
 \frac{\partial R(t+\tau)}{\partial u(t)} > 0
 \quad
 \text{under conditions where fan removal should dominate}.
-$$
+```
 
 For a safety-related control system, this is not ideal.
 
@@ -1413,7 +1413,7 @@ For a safety-related control system, this is not ideal.
 
 A classical linear model might use:
 
-$$
+```math
 R_{k+1}
 =
 aR_k
@@ -1423,12 +1423,12 @@ aR_k
 c u_k
 +
 \epsilon_k.
-$$
+```
 
 This is a reasonable baseline. It is interpretable and easy to validate. However, the real system
 is likely nonlinear:
 
-$$
+```math
 A_{\mathrm{eff}}
 =
 A_{\mathrm{eff}}
@@ -1439,15 +1439,15 @@ T_{\mathrm{room}}-T_{\mathrm{out}},
 H_{\mathrm{room}},
 P_{\mathrm{room}}-P_{\mathrm{out}}
 \right).
-$$
+```
 
 The source term may also be nonlinear and history-dependent:
 
-$$
+```math
 S_{\mathrm{eff}}(t)
 \ne
 \text{constant}.
-$$
+```
 
 A classical model can be a useful benchmark, but the UDE model is better aligned with the
 physics and the control goal.
@@ -1458,17 +1458,17 @@ physics and the control goal.
 
 Let
 
-$$
+```math
 \Omega
 \subset
 \mathbb{R}^3
-$$
+```
 
 represent the pump room.
 
 Let its boundary be decomposed as
 
-$$
+```math
 \partial\Omega
 =
 \Gamma_{\mathrm{fan}}
@@ -1480,20 +1480,20 @@ $$
 \Gamma_{\mathrm{water}}
 \cup
 \Gamma_{\mathrm{door}}.
-$$
+```
 
 The radon concentration field is:
 
-$$
+```math
 c:
 \Omega \times [0,T]
 \rightarrow
 \mathbb{R}_{\ge 0}.
-$$
+```
 
 The PDE is:
 
-$$
+```math
 \partial_t c
 =
 -\nabla \cdot (\mathbf{v}c)
@@ -1503,17 +1503,17 @@ $$
 s
 -
 \lambda_{\mathrm{Rn}}c.
-$$
+```
 
 The fan affects the boundary condition on
 
-$$
+```math
 \Gamma_{\mathrm{fan}}.
-$$
+```
 
 For example:
 
-$$
+```math
 \mathbf{v}(\mathbf{x},t)\cdot\mathbf{n}
 =
 u(t)\frac{Q_{\mathrm{fan}}(t)}{|\Gamma_{\mathrm{fan}}|}
@@ -1521,17 +1521,17 @@ u(t)\frac{Q_{\mathrm{fan}}(t)}{|\Gamma_{\mathrm{fan}}|}
 q_{\mathrm{nat}}(\mathbf{x},t),
 \qquad
 \mathbf{x}\in\Gamma_{\mathrm{fan}}.
-$$
+```
 
 Natural leakage can be represented on
 
-$$
+```math
 \Gamma_{\mathrm{leak}}
-$$
+```
 
 as:
 
-$$
+```math
 \mathbf{v}(\mathbf{x},t)\cdot\mathbf{n}
 =
 q_{\theta}
@@ -1542,11 +1542,11 @@ T_{\mathrm{room}}-T_{\mathrm{out}},
 H_{\mathrm{room}},
 H_{\mathrm{out}}
 \right).
-$$
+```
 
 Radon source from water or surfaces can be represented as:
 
-$$
+```math
 s(\mathbf{x},t)
 =
 s_{\mathrm{water}}(\mathbf{x},t)
@@ -1554,11 +1554,11 @@ s_{\mathrm{water}}(\mathbf{x},t)
 s_{\mathrm{wall}}(\mathbf{x},t)
 +
 s_{\mathrm{floor}}(\mathbf{x},t).
-$$
+```
 
 A learned source model could be:
 
-$$
+```math
 s_{\theta}(\mathbf{x},t)
 =
 s_{\theta}
@@ -1567,11 +1567,11 @@ s_{\theta}
 \mathbf{z}(t),
 \mathbf{h}(t)
 \right).
-$$
+```
 
 The full PDE problem would require:
 
-$$
+```math
 \left\{
 \Omega,
 \partial\Omega,
@@ -1583,7 +1583,7 @@ D,
 s,
 c(\mathbf{x},0)
 \right\}.
-$$
+```
 
 These are not reliably known. Therefore the PDE is used as a structural guide, not as a
 literal full-field CFD model.
@@ -1592,28 +1592,28 @@ literal full-field CFD model.
 
 The room-average concentration is:
 
-$$
+```math
 R(t)
 =
 \frac{1}{V}
 \int_{\Omega}
 c(\mathbf{x},t)\,d\mathbf{x}.
-$$
+```
 
 The total radon mass proxy is:
 
-$$
+```math
 M(t)
 =
 \int_{\Omega}
 c(\mathbf{x},t)\,d\mathbf{x}
 =
 VR(t).
-$$
+```
 
 From the PDE:
 
-$$
+```math
 \frac{dM}{dt}
 =
 G(t)
@@ -1623,29 +1623,29 @@ E(t)
 \lambda_{\mathrm{Rn}}M(t)
 +
 I(t),
-$$
+```
 
 where
 
-$$
+```math
 G(t)
 =
 \int_{\Omega}
 s(\mathbf{x},t)\,d\mathbf{x},
-$$
+```
 
-$$
+```math
 E(t)
 =
 \int_{\partial\Omega_{\mathrm{out}}}
 c(\mathbf{x},t)
 \mathbf{v}(\mathbf{x},t)\cdot\mathbf{n}
 \,d\Gamma,
-$$
+```
 
 and
 
-$$
+```math
 I(t)
 =
 \int_{\partial\Omega_{\mathrm{in}}}
@@ -1654,17 +1654,17 @@ c_{\mathrm{in}}(\mathbf{x},t)
 \mathbf{v}(\mathbf{x},t)\cdot\mathbf{n}
 \right|
 \,d\Gamma.
-$$
+```
 
 Divide by
 
-$$
+```math
 V
-$$
+```
 
 to get:
 
-$$
+```math
 \frac{dR}{dt}
 =
 \frac{G(t)}{V}
@@ -1674,19 +1674,19 @@ $$
 \lambda_{\mathrm{Rn}}R(t)
 +
 \frac{I(t)}{V}.
-$$
+```
 
 If the room is treated as approximately well-mixed at the control scale, then:
 
-$$
+```math
 E(t)
 \approx
 Q_{\mathrm{out,eff}}(t)R(t).
-$$
+```
 
 Thus:
 
-$$
+```math
 \frac{dR}{dt}
 =
 \frac{G(t)}{V}
@@ -1696,11 +1696,11 @@ $$
 \lambda_{\mathrm{Rn}}R(t)
 +
 \frac{Q_{\mathrm{in,eff}}(t)}{V}R_{\mathrm{in}}(t).
-$$
+```
 
 This can be written:
 
-$$
+```math
 \frac{dR}{dt}
 =
 S(t)
@@ -1708,29 +1708,29 @@ S(t)
 K(t)R(t)
 +
 B(t),
-$$
+```
 
 where
 
-$$
+```math
 S(t)=\frac{G(t)}{V},
-$$
+```
 
-$$
+```math
 K(t)=\frac{Q_{\mathrm{out,eff}}(t)}{V}+\lambda_{\mathrm{Rn}},
-$$
+```
 
 and
 
-$$
+```math
 B(t)=\frac{Q_{\mathrm{in,eff}}(t)}{V}R_{\mathrm{in}}(t).
-$$
+```
 
 The UDE replaces
 
-$$
+```math
 S(t), K(t), B(t)
-$$
+```
 
 with learned but constrained functions.
 
@@ -1738,46 +1738,46 @@ with learned but constrained functions.
 
 The learned source should be nonnegative:
 
-$$
+```math
 S_{\theta}(\mathbf{z},\mathbf{h}) \ge 0.
-$$
+```
 
 The learned removal rate should be nonnegative:
 
-$$
+```math
 A_{\theta}(\mathbf{z},u,\mathbf{h}) \ge 0.
-$$
+```
 
 The fan-on removal rate should not be lower than the fan-off removal rate, except under
 explicitly modeled failure conditions:
 
-$$
+```math
 A_{\theta}(\mathbf{z},1,\mathbf{h})
 \ge
 A_{\theta}(\mathbf{z},0,\mathbf{h}).
-$$
+```
 
 A useful decomposition is:
 
-$$
+```math
 A_{\theta}(\mathbf{z},u,\mathbf{h})
 =
 A_{0,\theta}(\mathbf{z},\mathbf{h})
 +
 uA_{1,\theta}(\mathbf{z},\mathbf{h}),
-$$
+```
 
 with
 
-$$
+```math
 A_{0,\theta}(\mathbf{z},\mathbf{h}) \ge 0,
 \qquad
 A_{1,\theta}(\mathbf{z},\mathbf{h}) \ge 0.
-$$
+```
 
 Then:
 
-$$
+```math
 A_{\theta}(\mathbf{z},1,\mathbf{h})
 -
 A_{\theta}(\mathbf{z},0,\mathbf{h})
@@ -1785,11 +1785,11 @@ A_{\theta}(\mathbf{z},0,\mathbf{h})
 A_{1,\theta}(\mathbf{z},\mathbf{h})
 \ge
 0.
-$$
+```
 
 The model becomes:
 
-$$
+```math
 \frac{dR}{dt}
 =
 S_{\theta}(\mathbf{z},\mathbf{h})
@@ -1803,40 +1803,40 @@ uA_{1,\theta}(\mathbf{z},\mathbf{h})
 \right]R
 +
 B_{\theta}(\mathbf{z},u,\mathbf{h}).
-$$
+```
 
 If outside radon is negligible or unavailable, one may initially set:
 
-$$
+```math
 B_{\theta}(\mathbf{z},u,\mathbf{h}) \approx 0,
-$$
+```
 
 but a more conservative model keeps it:
 
-$$
+```math
 B_{\theta}(\mathbf{z},u,\mathbf{h}) \ge 0.
-$$
+```
 
 The learned ventilation term can include a physically meaningful fan efficiency:
 
-$$
+```math
 A_{1,\theta}(\mathbf{z},\mathbf{h})
 =
 \eta_{\theta}(\mathbf{z},\mathbf{h})
 \frac{Q_{\mathrm{fan}}}{V},
-$$
+```
 
 with
 
-$$
+```math
 0 \le \eta_{\theta}(\mathbf{z},\mathbf{h}) \le \eta_{\max}.
-$$
+```
 
 The parameter
 
-$$
+```math
 \eta_{\theta}
-$$
+```
 
 captures how much of the fan's nominal flow actually removes radon from the sensor-relevant
 air volume.
@@ -1847,23 +1847,23 @@ Radon generation and removal may have memory. For example, humidity changes may 
 surface emanation. Pump activity may expose or agitate water. Pressure changes may open
 or suppress underground inflow paths. The measured vector
 
-$$
+```math
 \mathbf{z}(t)
-$$
+```
 
 may not fully describe these effects.
 
 Introduce a latent state:
 
-$$
+```math
 \mathbf{h}(t)
 \in
 \mathbb{R}^{m}.
-$$
+```
 
 A physically interpretable version is:
 
-$$
+```math
 \mathbf{h}(t)
 =
 \begin{bmatrix}
@@ -1871,33 +1871,33 @@ S_{\mathrm{lat}}(t)\\
 M_{\mathrm{mix}}(t)\\
 L_{\mathrm{leak}}(t)
 \end{bmatrix},
-$$
+```
 
 where:
 
-$$
+```math
 S_{\mathrm{lat}}(t)
 :
 \text{slow source intensity memory},
-$$
+```
 
-$$
+```math
 M_{\mathrm{mix}}(t)
 :
 \text{mixing or dead-zone memory},
-$$
+```
 
 and
 
-$$
+```math
 L_{\mathrm{leak}}(t)
 :
 \text{unobserved leakage state}.
-$$
+```
 
 A relaxation model for source memory is:
 
-$$
+```math
 \frac{dS_{\mathrm{lat}}}{dt}
 =
 \frac{
@@ -1907,21 +1907,21 @@ S_{\mathrm{lat}}
 }{
 \tau_{S,\theta}(\mathbf{z})
 }.
-$$
+```
 
 Then the source term can be:
 
-$$
+```math
 S_{\theta}(\mathbf{z},\mathbf{h})
 =
 S_{\mathrm{base},\theta}(\mathbf{z})
 +
 S_{\mathrm{lat}}(t).
-$$
+```
 
 A mixing-memory term can affect fan efficiency:
 
-$$
+```math
 \eta_{\theta}(\mathbf{z},\mathbf{h})
 =
 \eta_{\theta}
@@ -1930,7 +1930,7 @@ $$
 M_{\mathrm{mix}},
 L_{\mathrm{leak}}
 \right).
-$$
+```
 
 This gives the model enough flexibility to represent slow changes without abandoning
 physical interpretability.
@@ -1939,29 +1939,29 @@ physical interpretability.
 
 The actual sensor may not read the exact room average
 
-$$
+```math
 R(t).
-$$
+```
 
 If the sensor is located at position
 
-$$
+```math
 \mathbf{x}_s,
-$$
+```
 
 then the raw concentration near the sensor is:
 
-$$
+```math
 y_{\mathrm{raw}}(t)
 =
 c(\mathbf{x}_s,t)
 +
 \varepsilon(t).
-$$
+```
 
 Under the reduced model, this is approximated as:
 
-$$
+```math
 y_{\mathrm{raw}}(t)
 =
 R(t)
@@ -1969,19 +1969,19 @@ R(t)
 \delta_{\mathrm{loc}}(t)
 +
 \varepsilon(t),
-$$
+```
 
 where
 
-$$
+```math
 \delta_{\mathrm{loc}}(t)
-$$
+```
 
 is a location bias due to imperfect mixing.
 
 If the sensor reports a rolling average:
 
-$$
+```math
 y_{\tau}(t)
 =
 \frac{1}{\tau}
@@ -1989,27 +1989,27 @@ y_{\tau}(t)
 R(s)\,ds
 +
 \varepsilon(t).
-$$
+```
 
 The exact derivative of this rolling average is:
 
-$$
+```math
 \frac{dy_{\tau}}{dt}
 =
 \frac{R(t)-R(t-\tau)}{\tau}.
-$$
+```
 
 For controller design, an exponential approximation is often more convenient:
 
-$$
+```math
 \frac{d\bar{R}_{\tau}}{dt}
 =
 \frac{R(t)-\bar{R}_{\tau}(t)}{\tau}.
-$$
+```
 
 Then the model state can include:
 
-$$
+```math
 \mathbf{x}(t)
 =
 \begin{bmatrix}
@@ -2018,87 +2018,87 @@ R(t)\\
 \bar{R}_{24h}(t)\\
 \mathbf{h}(t)
 \end{bmatrix}.
-$$
+```
 
 With:
 
-$$
+```math
 \frac{d\bar{R}_{4h}}{dt}
 =
 \frac{R-\bar{R}_{4h}}{\tau_{4h}},
-$$
+```
 
 and:
 
-$$
+```math
 \frac{d\bar{R}_{24h}}{dt}
 =
 \frac{R-\bar{R}_{24h}}{\tau_{24h}}.
-$$
+```
 
 The observation equation becomes:
 
-$$
+```math
 y(t)
 =
 g(\mathbf{x}(t))
 +
 \varepsilon(t).
-$$
+```
 
 For a 4-hour average sensor:
 
-$$
+```math
 g(\mathbf{x}(t))
 =
 \bar{R}_{4h}(t).
-$$
+```
 
 For a raw or short-interval sensor:
 
-$$
+```math
 g(\mathbf{x}(t))
 =
 R(t).
-$$
+```
 
 This distinction matters because a controller that only sees
 
-$$
+```math
 \bar{R}_{4h}(t)
-$$
+```
 
 may respond too slowly unless it estimates the hidden state
 
-$$
+```math
 R(t).
-$$
+```
 
 ### 7.6 Training Objective
 
 Let the model prediction be:
 
-$$
+```math
 \widehat{\mathbf{x}}_{\theta}(t).
-$$
+```
 
 Let the predicted sensor output be:
 
-$$
+```math
 \widehat{y}_{\theta}(t)
 =
 g(\widehat{\mathbf{x}}_{\theta}(t)).
-$$
+```
 
 Given measurements
 
-$$
+```math
 y_k = y(t_k),
-$$
+```
 
 the data loss is:
 
-$$
+```math
 \mathcal{L}_{\mathrm{data}}(\theta)
 =
 \sum_{k=1}^{K}
@@ -2109,11 +2109,11 @@ $$
 }{
 \sigma_y^2
 }.
-$$
+```
 
 The state evolves according to:
 
-$$
+```math
 \widehat{\mathbf{x}}_{\theta}(t_{k+1})
 =
 \widehat{\mathbf{x}}_{\theta}(t_k)
@@ -2126,12 +2126,12 @@ f_{\theta}
 u(s)
 \right)
 ds.
-$$
+```
 
 The differential-equation consistency is built into the model integration. Additional physical
 penalties can be added:
 
-$$
+```math
 \mathcal{L}_{\mathrm{phys}}
 =
 \rho_S
@@ -2153,11 +2153,11 @@ $$
 -A_{\theta}(\mathbf{z}_k,u_k,\mathbf{h}_k)
 \right)
 \right]^2.
-$$
+```
 
 Fan monotonicity can be encouraged by:
 
-$$
+```math
 \mathcal{L}_{\mathrm{fan}}
 =
 \rho_F
@@ -2171,11 +2171,11 @@ A_{\theta}(\mathbf{z}_k,0,\mathbf{h}_k)
 A_{\theta}(\mathbf{z}_k,1,\mathbf{h}_k)
 \right)
 \right]^2.
-$$
+```
 
 A smoothness prior can be placed on slowly varying source behavior:
 
-$$
+```math
 \mathcal{L}_{\mathrm{smooth}}
 =
 \rho_H
@@ -2184,11 +2184,11 @@ $$
 \frac{d\mathbf{h}}{dt}
 \right\|^2
 dt.
-$$
+```
 
 The total training objective is:
 
-$$
+```math
 \boxed{
 \mathcal{L}(\theta)
 =
@@ -2202,7 +2202,7 @@ $$
 +
 \mathcal{L}_{\mathrm{reg}}.
 }
-$$
+```
 
 This formulation makes the model data-driven while still discouraging physically impossible
 behavior.
@@ -2214,19 +2214,19 @@ is a multi-compartment model.
 
 Divide the room into
 
-$$
+```math
 n
-$$
+```
 
 effective zones:
 
-$$
+```math
 R_1(t),R_2(t),\ldots,R_n(t).
-$$
+```
 
 The model becomes:
 
-$$
+```math
 \frac{dR_i}{dt}
 =
 S_{i,\theta}
@@ -2241,11 +2241,11 @@ A_{i,\theta}
 K_{ij,\theta}(R_j-R_i)
 +
 B_{i,\theta}.
-$$
+```
 
 In vector form:
 
-$$
+```math
 \frac{d\mathbf{R}}{dt}
 =
 \mathbf{S}_{\theta}
@@ -2259,11 +2259,11 @@ $$
 \mathbf{K}_{\theta}\mathbf{R}
 +
 \mathbf{B}_{\theta}.
-$$
+```
 
 Where:
 
-$$
+```math
 \mathbf{R}(t)
 =
 \begin{bmatrix}
@@ -2272,42 +2272,42 @@ R_2(t)\\
 \vdots\\
 R_n(t)
 \end{bmatrix}.
-$$
+```
 
 The matrix
 
-$$
+```math
 \mathbf{K}_{\theta}
-$$
+```
 
 models inter-zone exchange. This is a finite-volume approximation of the PDE, but with
 learned effective transport coefficients.
 
 This extension is especially useful if multiple radon sensors are installed:
 
-$$
+```math
 y_j(t)
 =
 R_{\pi(j)}(t)+\varepsilon_j(t),
-$$
+```
 
 where
 
-$$
+```math
 \pi(j)
-$$
+```
 
 maps sensor
 
-$$
+```math
 j
-$$
+```
 
 to zone
 
-$$
+```math
 i.
-$$
+```
 
 The multi-compartment model is still option 1. It is not full CFD. It is a grey-box UDE with
 more spatial structure.
@@ -2320,19 +2320,19 @@ simulatable transition model and solves a constrained binary optimization proble
 
 At current decision time
 
-$$
+```math
 t_0,
-$$
+```
 
 define a planning horizon:
 
-$$
+```math
 [t_0,t_0+H].
-$$
+```
 
 The sampled decision variables are:
 
-$$
+```math
 \mathbf{u}
 =
 \begin{bmatrix}
@@ -2343,11 +2343,11 @@ u_H
 \end{bmatrix},
 \qquad
 u_k\in\{0,1\}.
-$$
+```
 
 The sampled worker-entry plan is:
 
-$$
+```math
 \mathbf{w}
 =
 \begin{bmatrix}
@@ -2358,43 +2358,43 @@ w_H
 \end{bmatrix},
 \qquad
 w_k\in\{0,1\}.
-$$
+```
 
 where:
 
-$$
+```math
 w_k=1
 \quad
 \Longleftrightarrow
 \quad
 \text{workers are scheduled to be inside at step } k.
-$$
+```
 
 The historical data is used to estimate the current model state:
 
-$$
+```math
 \widehat{\mathbf{x}}_0
 =
 \mathcal{E}_{\theta}
 \left(
 \mathcal{D}_{\le 0}
 \right),
-$$
+```
 
 where
 
-$$
+```math
 \mathcal{D}_{\le 0}
 =
 \left\{
 \mathbf{z}_{j},u_j,y_j
 \right\}_{j\le 0}.
-$$
+```
 
 After this state-estimation step, the optimizer does not need to directly consume all past data.
 It uses:
 
-$$
+```math
 \boxed{
 \widehat{\mathbf{x}}_0,
 \qquad
@@ -2404,11 +2404,11 @@ $$
 \qquad
 F_{\theta}.
 }
-$$
+```
 
 The UDE prediction model supplies the rollout dynamics:
 
-$$
+```math
 \widehat{\mathbf{x}}_{k+1}
 =
 F_{\theta}
@@ -2419,19 +2419,19 @@ u_k
 \right),
 \qquad
 k=0,\ldots,H-1.
-$$
+```
 
 The predicted radon concentration is extracted from the state:
 
-$$
+```math
 \widehat{R}_k
 =
 C_R\widehat{\mathbf{x}}_k.
-$$
+```
 
 The basic binary planning problem is:
 
-$$
+```math
 \boxed{
 \begin{aligned}
 \mathbf{u}^{\star}
@@ -2479,29 +2479,29 @@ m_{\mathrm{safety}}
 \xi_k.
 \end{aligned}
 }
-$$
+```
 
 The term
 
-$$
+```math
 c_Eu_k
-$$
+```
 
 penalizes fan runtime. The term
 
-$$
+```math
 c_{\Delta}s_k
-$$
+```
 
 penalizes toggling. The slack term
 
-$$
+```math
 c_{\xi}\xi_k
-$$
+```
 
 penalizes safety violation and should have the largest cost:
 
-$$
+```math
 c_{\xi}
 \gg
 c_E,
@@ -2509,53 +2509,53 @@ c_E,
 c_{\xi}
 \gg
 c_{\Delta}.
-$$
+```
 
 The switch variable can be defined as:
 
-$$
+```math
 s_k
 =
 \left|
 u_k-u_{k-1}
 \right|.
-$$
+```
 
 For a mixed-integer linear representation, introduce:
 
-$$
+```math
 s_k\in\{0,1\},
-$$
+```
 
 with:
 
-$$
+```math
 s_k \ge u_k-u_{k-1},
 \qquad
 s_k \ge u_{k-1}-u_k,
-$$
+```
 
 and:
 
-$$
+```math
 s_k \le u_k+u_{k-1},
 \qquad
 s_k \le 2-u_k-u_{k-1}.
-$$
+```
 
 ### 9.1 Minimum Debounce or Dwell Time
 
 The subway officials may not want the fan to toggle too frequently. Let:
 
-$$
+```math
 N_{\mathrm{debounce}}
-$$
+```
 
 be the minimum number of discrete time steps between two toggles.
 
 The debounce constraint is:
 
-$$
+```math
 \boxed{
 \sum_{r=k}^{k+N_{\mathrm{debounce}}-1}
 s_r
@@ -2564,24 +2564,24 @@ s_r
 \qquad
 k=0,\ldots,H-N_{\mathrm{debounce}}+1.
 }
-$$
+```
 
 This ensures that if:
 
-$$
+```math
 s_k=1,
-$$
+```
 
 then:
 
-$$
+```math
 s_{k+1}=s_{k+2}=\cdots=s_{k+N_{\mathrm{debounce}}-1}=0.
-$$
+```
 
 If separate minimum-on and minimum-off times are required, define the start and stop
 variables:
 
-$$
+```math
 a_k
 =
 \max(0,u_k-u_{k-1}),
@@ -2589,11 +2589,11 @@ a_k
 b_k
 =
 \max(0,u_{k-1}-u_k).
-$$
+```
 
 Then:
 
-$$
+```math
 a_k=1
 \quad
 \Longrightarrow
@@ -2601,11 +2601,11 @@ a_k=1
 u_{k+r}=1,
 \qquad
 r=0,\ldots,N_{\mathrm{on}}-1,
-$$
+```
 
 and:
 
-$$
+```math
 b_k=1
 \quad
 \Longrightarrow
@@ -2613,41 +2613,41 @@ b_k=1
 u_{k+r}=0,
 \qquad
 r=0,\ldots,N_{\mathrm{off}}-1.
-$$
+```
 
 These can be expressed as:
 
-$$
+```math
 \sum_{r=k}^{k+N_{\mathrm{on}}-1}
 u_r
 \ge
 N_{\mathrm{on}}a_k,
-$$
+```
 
 and:
 
-$$
+```math
 \sum_{r=k}^{k+N_{\mathrm{off}}-1}
 (1-u_r)
 \ge
 N_{\mathrm{off}}b_k.
-$$
+```
 
 ### 9.2 Planning With Probabilistic Safety
 
 For worker safety, the deterministic constraint:
 
-$$
+```math
 \widehat{R}_k
 \le
 R_{\mathrm{safe}}
 -
 m_{\mathrm{safety}}
-$$
+```
 
 can be replaced by a probabilistic or quantile constraint:
 
-$$
+```math
 \boxed{
 w_k=1
 \quad
@@ -2664,12 +2664,12 @@ u_{0:k}
 \le
 R_{\mathrm{safe}}.
 }
-$$
+```
 
 This makes the planner conservative when the model is uncertain. A deterministic equivalent
 can be written as:
 
-$$
+```math
 \mu_{R,k}
 +
 \beta\sigma_{R,k}
@@ -2677,11 +2677,11 @@ $$
 R_{\mathrm{safe}},
 \qquad
 w_k=1,
-$$
+```
 
 where:
 
-$$
+```math
 \mu_{R,k}
 =
 \mathbb{E}[R_k],
@@ -2689,19 +2689,19 @@ $$
 \sigma_{R,k}^2
 =
 \mathrm{Var}(R_k).
-$$
+```
 
 ### 9.3 Preemptive Fan Start
 
 The planner naturally discovers a preemptive fan start time. If the next worker-entry time is:
 
-$$
+```math
 t_i^{\mathrm{in}},
-$$
+```
 
 then the planner searches for a sequence satisfying:
 
-$$
+```math
 R(t)
 \le
 R_{\mathrm{safe}},
@@ -2711,18 +2711,18 @@ t\in
 t_i^{\mathrm{in}},
 t_i^{\mathrm{out}}
 \right],
-$$
+```
 
 while minimizing:
 
-$$
+```math
 \int_{t_0}^{t_i^{\mathrm{out}}}
 u(t)\,dt.
-$$
+```
 
 In the simplest single-entry case, this is equivalent to finding the latest feasible fan start:
 
-$$
+```math
 t_i^{\mathrm{on},\star}
 =
 \max
@@ -2737,7 +2737,7 @@ u(s)=1,\ s\in[t,t_i^{\mathrm{in}}]
 \le
 R_{\mathrm{safe}}
 \right\}.
-$$
+```
 
 For multiple worker windows, the full binary MPC formulation is preferable because it can
 reuse ventilation across nearby windows, account for fan debounce limits, and avoid short
@@ -2745,7 +2745,7 @@ unnecessary on/off cycles.
 
 The final planning output is:
 
-$$
+```math
 \boxed{
 \mathbf{u}^{\star}
 =
@@ -2753,7 +2753,7 @@ $$
 0,0,0,1,1,1,1,0,\ldots
 \right],
 }
-$$
+```
 
 which is the optimized fan toggle plan.
 
@@ -2761,19 +2761,19 @@ which is the optimized fan toggle plan.
 
 Because this is a worker-safety application, the model should not output only a mean:
 
-$$
+```math
 \mathbb{E}[R(t)].
-$$
+```
 
 It should output predictive uncertainty:
 
-$$
+```math
 p(R(t)\mid\mathcal{D}_{t_0}).
-$$
+```
 
 Useful uncertainty sources include:
 
-$$
+```math
 \text{sensor noise},
 \qquad
 \text{model parameter uncertainty},
@@ -2783,68 +2783,68 @@ $$
 \text{weather forecast uncertainty},
 \qquad
 \text{fan performance uncertainty}.
-$$
+```
 
 The safety rule should be conservative:
 
-$$
+```math
 R_{\mathrm{control}}
 (t)
 =
 Q_{1-\alpha}[R(t)]
-$$
+```
 
 and:
 
-$$
+```math
 R_{\mathrm{control}}(t)
 \le
 R_{\mathrm{safe}}.
-$$
+```
 
 For example, with:
 
-$$
+```math
 \alpha=0.05,
-$$
+```
 
 the controller uses the 95th percentile forecast, not the mean forecast.
 
 A safety margin can also be added:
 
-$$
+```math
 R_{\mathrm{control}}(t)
 \le
 R_{\mathrm{safe}}-m_{\mathrm{safety}}.
-$$
+```
 
 The margin can be adaptive:
 
-$$
+```math
 m_{\mathrm{safety}}(t)
 =
 \beta\sigma_R(t)
 +
 m_0,
-$$
+```
 
 where:
 
-$$
+```math
 \sigma_R(t)
-$$
+```
 
 is the predictive standard deviation,
 
-$$
+```math
 \beta>0
-$$
+```
 
 is a conservatism factor, and
 
-$$
+```math
 m_0
-$$
+```
 
 is a fixed regulatory or engineering buffer.
 
@@ -2853,7 +2853,7 @@ is a fixed regulatory or engineering buffer.
 The model can learn only if it observes changes caused by the fan and by natural conditions.
 The useful training data includes:
 
-$$
+```math
 \left(
 R_{\mathrm{room}},
 T_{\mathrm{room}},
@@ -2866,11 +2866,11 @@ H_{\mathrm{out}},
 P_{\mathrm{out}},
 u
 \right)(t).
-$$
+```
 
 Additional high-value signals, if available, are:
 
-$$
+```math
 \text{water pump state},
 \qquad
 \text{water level},
@@ -2882,80 +2882,80 @@ $$
 \text{fan current or power},
 \qquad
 \text{local differential pressure to adjacent spaces}.
-$$
+```
 
 The training data should include:
 
-$$
+```math
 u(t)=0
-$$
+```
 
 periods, to learn natural accumulation:
 
-$$
+```math
 \frac{dR}{dt}
 \approx
 S_{\theta}
 -
 \left(A_{0,\theta}+\lambda_{\mathrm{Rn}}\right)R.
-$$
+```
 
 It should also include:
 
-$$
+```math
 u(t)=1
-$$
+```
 
 periods, to learn fan-driven removal:
 
-$$
+```math
 \frac{dR}{dt}
 \approx
 S_{\theta}
 -
 \left(A_{0,\theta}+A_{1,\theta}+\lambda_{\mathrm{Rn}}\right)R.
-$$
+```
 
 The most informative events are transitions:
 
-$$
+```math
 u:0\rightarrow 1,
 \qquad
 u:1\rightarrow 0.
-$$
+```
 
 These transitions reveal time constants:
 
-$$
+```math
 \tau_{\mathrm{off}}
 \approx
 \frac{1}{A_{0,\theta}+\lambda_{\mathrm{Rn}}},
-$$
+```
 
 and:
 
-$$
+```math
 \tau_{\mathrm{on}}
 \approx
 \frac{1}{A_{0,\theta}+A_{1,\theta}+\lambda_{\mathrm{Rn}}}.
-$$
+```
 
 If safe and operationally acceptable, planned fan test pulses can improve identifiability:
 
-$$
+```math
 u(t)
 =
 \begin{cases}
 1, & t\in[t_a,t_b],\\
 0, & \text{otherwise}.
 \end{cases}
-$$
+```
 
 The response:
 
-$$
+```math
 R(t_b+\tau)-R(t_a)
-$$
+```
 
 helps estimate the removal dynamics under real conditions.
 
@@ -2975,7 +2975,7 @@ A practical deployment sequence is:
 
 The model should be judged by operational metrics:
 
-$$
+```math
 \text{miss rate}
 =
 \Pr
@@ -2984,15 +2984,15 @@ R(t)>R_{\mathrm{safe}}
 \mid
 t\in\mathcal{W}
 \right),
-$$
+```
 
-$$
+```math
 \text{fan runtime}
 =
 \int_0^T u(t)\,dt,
-$$
+```
 
-$$
+```math
 \text{preparation success}
 =
 \Pr
@@ -3001,20 +3001,20 @@ R(t_i^{\mathrm{in}})
 \le
 R_{\mathrm{safe}}
 \right),
-$$
+```
 
 and:
 
-$$
+```math
 \text{unnecessary ventilation}
 =
 \int_{t\notin\mathcal{W}}
 u(t)\,dt.
-$$
+```
 
 For worker safety, the priority order should be:
 
-$$
+```math
 \text{safety during entry windows}
 \succ
 \text{robustness to sensor/model uncertainty}
@@ -3022,13 +3022,13 @@ $$
 \text{energy optimization}
 \succ
 \text{fan wear minimization}.
-$$
+```
 
 ## 13. Final Recommendation
 
 The final system should be defined as two coupled mathematical components:
 
-$$
+```math
 \boxed{
 \text{Component 1: physics-informed prediction}
 }
@@ -3036,11 +3036,11 @@ $$
 \boxed{
 \text{Component 2: constrained binary fan planning}
 }
-$$
+```
 
 The best prediction model is a grey-box Universal Differential Equation:
 
-$$
+```math
 \boxed{
 \frac{dR}{dt}
 =
@@ -3056,21 +3056,21 @@ uA_{1,\theta}(\mathbf{z},\mathbf{h})
 +
 B_{\theta}(\mathbf{z},u,\mathbf{h})
 }
-$$
+```
 
 with latent dynamics:
 
-$$
+```math
 \boxed{
 \frac{d\mathbf{h}}{dt}
 =
 F_{\theta}(\mathbf{h},\mathbf{z},u)
 }
-$$
+```
 
 and sensor observation:
 
-$$
+```math
 \boxed{
 y(t)
 =
@@ -3078,32 +3078,32 @@ g(\mathbf{x}(t))
 +
 \varepsilon(t)
 }
-$$
+```
 
 This prediction model is the right compromise:
 
-$$
+```math
 \text{more physical than a black-box forecast model,}
-$$
+```
 
-$$
+```math
 \text{more feasible than CFD,}
-$$
+```
 
-$$
+```math
 \text{less data-hungry than neural operators,}
-$$
+```
 
 and
 
-$$
+```math
 \text{more deployable than a full spatial PINN.}
-$$
+```
 
 But the prediction model alone is not the final operational answer. It must be wrapped by a
 binary fan planner:
 
-$$
+```math
 \boxed{
 \mathbf{u}^{\star}
 =
@@ -3116,21 +3116,21 @@ $$
 \sum_{k=0}^{H}c_{\xi}\xi_k
 \right]
 }
-$$
+```
 
 with:
 
-$$
+```math
 u_k\in\{0,1\},
 \qquad
 s_k\in\{0,1\},
 \qquad
 \xi_k\ge 0,
-$$
+```
 
 subject to UDE rollout dynamics:
 
-$$
+```math
 \widehat{\mathbf{x}}_{k+1}
 =
 F_{\theta}
@@ -3139,11 +3139,11 @@ F_{\theta}
 \mathbf{z}_k^{+},
 u_k
 \right),
-$$
+```
 
 worker-entry safety:
 
-$$
+```math
 \boxed{
 w_k=1
 \quad
@@ -3156,22 +3156,22 @@ R_k
 \le
 R_{\mathrm{safe}},
 }
-$$
+```
 
 and debounce constraints:
 
-$$
+```math
 \boxed{
 \sum_{r=k}^{k+N_{\mathrm{debounce}}-1}
 s_r
 \le
 1.
 }
-$$
+```
 
 Thus the final engineering object is:
 
-$$
+```math
 \boxed{
 \left(
 \mathcal{D}_{\le k},
@@ -3181,23 +3181,23 @@ $$
 \longrightarrow
 \mathbf{u}_{k:k+H}^{\star}.
 }
-$$
+```
 
 In plain terms:
 
-$$
+```math
 \text{learn how this exact room accumulates and clears radon,}
-$$
+```
 
-$$
+```math
 \text{use that learned model to simulate candidate fan plans,}
-$$
+```
 
 and
 
-$$
+```math
 \text{choose the safest low-runtime 0/1 fan schedule with limited toggling.}
-$$
+```
 
 ## 14. Method References
 
